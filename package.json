@@ -2,9 +2,9 @@
   "name": "tiktok-physics-visuals",
   "version": "1.0.0",
   "description": "A collection of physics visualisations for my TikTok page",
-  "main": "src/index.ts",
+  "main": "src/render.ts",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/render.ts"
   },
   "dependencies": {
     "canvas": "^2.11.2"

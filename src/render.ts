@@ -1,0 +1,63 @@
+import { Canvas, createCanvas } from "canvas";
+import { createWriteStream, mkdirSync } from "fs";
+import config from "./config.json";
+import BouncingBall from "./simulations/bouncing_ball";
+
+function main() {
+    const width = config.render.screenWidth;
+    const height = config.render.screenHeight;
+    const fps = config.render.framesPerSecond;
+    const duration = config.render.duration;
+    const bgColor = config.render.background;
+
+    // create canvas to draw frames
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    // TODO: load this from file with command
+    // e.g. npm start bouncing_ball
+    const sim = new BouncingBall(width, height);
+    sim.init();
+
+    // create frame output directory
+    mkdirSync("out");
+
+    // draw each from
+    const frameCount = Math.round(duration * fps);
+    const timeStep = 1 / fps;
+    for(let i = 0; i < frameCount; i++) {
+        sim.simulate(timeStep);
+
+        // draw background to clear screen
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // draw simulation
+        sim.draw(ctx);
+
+        // save frame to disk
+        saveFrame(canvas, i);
+        console.log(`Frame ${i}/${frameCount} done`);
+    }
+}
+
+async function saveFrame(canvas: Canvas, frameIndex: number) {
+    const data = canvas.createPNGStream();
+    const out  = createWriteStream(`out/sim-frame-${String(frameIndex).padStart(4, "0")}.png`);
+    data.pipe(out);
+}
+
+// config types
+// interface ScreenConfig {
+//     screenWidth: number;
+//     screenHeight: number;
+//     framesPerSecond?: number;
+// }
+
+// interface AppConfig {
+//     render: ScreenConfig;
+//     preview: ScreenConfig;
+// }
+
+// start script
+main();
