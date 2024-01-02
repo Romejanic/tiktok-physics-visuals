@@ -40,7 +40,7 @@ function initApp() {
 
         // don't do anything if we're paused
         if(!playing) return;
-        fpsCount.innerText = `${(1/delta).toFixed(1)} fps`;
+        updateFps(delta);
 
         // run the simulation another step
         sim.simulate(delta);
@@ -68,6 +68,9 @@ function drawFrame() {
 function updateTimer() {
     timer.innerText = `${simTime.toFixed(2)}s`;
 }
+function updateFps(delta: number) {
+    fpsCount.innerText = `${(1/delta).toFixed(1)} fps`;
+}
 
 pauseBtn.addEventListener("click", () => {
     playing = !playing;
@@ -88,9 +91,9 @@ stepBtn.addEventListener("click", () => {
     const delta = 1/30; // mimic 30fps
     simTime += delta;
     sim.simulate(delta);
+    updateFps(delta);
     updateTimer();
     drawFrame();
-    fpsCount.innerText = `${(1/delta).toFixed(1)} fps`;
 });
 
 // start everything
