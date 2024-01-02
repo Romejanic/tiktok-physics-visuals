@@ -15,9 +15,9 @@ export default class BouncingBall extends Simulation {
     init(): void {
         this.balls.splice(0);
         this.balls.push({
-            position: [ this.width/2, this.height/2 ],
+            position: [ this.width/2, this.height/2-50 ],
             velocity: [ 0, 0 ],
-            size: 1.0
+            size: 20.0
         });
     }
 
@@ -25,14 +25,14 @@ export default class BouncingBall extends Simulation {
         for(const ball of this.balls) {
             let yVel = ball.velocity[1];
             // apply gravity
-            yVel -= 9.8 * delta;
+            yVel -= 98 * delta;
             // check for collision with ground
-            if(ball.position[1] <= this.height/2+50) {
+            if(ball.position[1] <= this.height/2+50-(ball.size/2)) {
                 yVel *= -0.9;
             }
             // move ball based on velocity
             ball.velocity = [0, yVel];
-            ball.position = vec2_add(ball.position, vec2_scale(ball.velocity, delta));
+            ball.position = vec2_add(ball.position, vec2_scale(ball.velocity, ball.size * delta));
         }
     }
     
@@ -46,7 +46,7 @@ export default class BouncingBall extends Simulation {
         }
 
         // draw ground
-        ctx.strokeStyle = "5px solid black";
+        ctx.strokeStyle = "15px solid black";
         ctx.beginPath();
         ctx.moveTo(this.width/2-200, this.height/2+50);
         ctx.lineTo(this.width/2+200, this.height/2+50);

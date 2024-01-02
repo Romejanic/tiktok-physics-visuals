@@ -1,9 +1,9 @@
-import { Canvas, createCanvas } from "canvas";
+import { Canvas, PNGStream, createCanvas } from "canvas";
 import { createWriteStream, mkdirSync } from "fs";
 import config from "./config.json";
 import BouncingBall from "./simulations/bouncing_ball";
 
-function main() {
+async function main() {
     const width = config.render.screenWidth;
     const height = config.render.screenHeight;
     const fps = config.render.framesPerSecond;
@@ -36,15 +36,24 @@ function main() {
         sim.draw(ctx);
 
         // save frame to disk
-        saveFrame(canvas, i);
+        await saveFrame(canvas, i);
         console.log(`Frame ${i}/${frameCount} done`);
     }
 }
 
 async function saveFrame(canvas: Canvas, frameIndex: number) {
     const data = canvas.createPNGStream();
-    const out  = createWriteStream(`out/sim-frame-${String(frameIndex).padStart(4, "0")}.png`);
-    data.pipe(out);
+    await saveStreamToFile(data, `out/sim-frame-${String(frameIndex).padStart(4, "0")}.png`);
+}
+
+function saveStreamToFile(stream: PNGStream, path: string) {
+    return new Promise((resolve, reject) => {
+        const out = createWriteStream(path);
+        out.on("error", reject);
+        out.on("finish", resolve);
+        stream.on("error", reject);
+        stream.pipe(out);
+    });
 }
 
 // config types
