@@ -9,6 +9,13 @@ cd tiktok-physics-visuals
 npm i
 ```
 
+**Open dev preview of simulation**
+```sh
+npm run dev
+```
+
+This will open up http://localhost:5713 on your browser, allowing you to test, debug and hot-reload the changes you make to the simulation without needing to render to a file.
+
 **Render animation to file**
 ```sh
 sudo apt update
