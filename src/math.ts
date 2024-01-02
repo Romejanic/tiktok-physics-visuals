@@ -3,6 +3,14 @@
 // constants
 export const TWO_PI = 2 * Math.PI;
 
+// color functions
+export function randomColor() {
+    const r = Math.floor(Math.random() * 255).toString(16).padStart(2, '');
+    const g = Math.floor(Math.random() * 255).toString(16).padStart(2, '');
+    const b = Math.floor(Math.random() * 255).toString(16).padStart(2, '');
+    return `#${r}${g}${b}`;
+}
+
 // vec2 functions/types
 export type vec2 = [number, number];
 
