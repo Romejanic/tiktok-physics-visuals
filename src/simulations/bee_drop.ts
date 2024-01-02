@@ -67,23 +67,45 @@ export default class BeeDroppingBalls extends Simulation {
         }
 
         // simulate balls
-        for(const b of this.balls) {
+        const forRemoval = [];
+        for(const i in this.balls) {
+            const b = this.balls[i];
             const gravity = 980 * delta;
             b.velocity = vec2_add(b.velocity, [0, gravity]);
             b.position = vec2_add(b.position, vec2_scale(b.velocity, delta));
+            // remove ball if it's gone offscreen
+            if(b.position[1] > this.height+b.size) {
+                forRemoval.push(i);
+            }
+            // test for collision with edge
             if(this.isTouchingSide(b)) {
-                const normal = vec2_sub(this.center, b.position);
+                const normal = vec2_normalize(vec2_sub(this.center, b.position));
                 const force = vec2_length(b.velocity);
-                b.velocity = vec2_scale(vec2_normalize(normal), force);
+                b.velocity = vec2_scale(normal, force);
+                // prevent ball from going through wall
+                b.position = vec2_sub(this.center, vec2_scale(normal, this.width/3-b.size));
+            }
+            // test for collisions with other balls
+            for(const j in this.balls) {
+                if(i === j) continue;
+                const other = this.balls[j];
+                if(this.isTouchingOtherBall(b, other)) {
+                    const collisionNormal = vec2_normalize(vec2_sub(other.position, b.position));
+                    const force = (vec2_length(b.velocity) + vec2_length(other.velocity)) / 2;
+                    other.velocity = vec2_scale(collisionNormal, force);
+                    b.velocity = vec2_scale(collisionNormal, -force);
+                }
             }
         }
 
+        // remove any balls marked for removal
+        this.balls = this.balls.filter((_,i) => !forRemoval.includes(i));
     }
 
     newBall() {
         const jitterX = Math.random() * 8 - 4;
         this.balls.push({
-            position: vec2_add(this.spawnPoint, [jitterX, 0]),
+            position: vec2_add(this.spawnPoint, [jitterX, -150]),
             velocity: [0, 0],
             size: 10,
             color: randomColor()
@@ -94,6 +116,11 @@ export default class BeeDroppingBalls extends Simulation {
         if(vec2_distance(b.position, this.spawnPoint) < SPAWN_SIZE) return false;
         const distance = vec2_distance(b.position, this.center);
         return distance > this.width/3-b.size-0.1 && distance < this.width/3+b.size+0.1;
+    }
+
+    isTouchingOtherBall(a: Ball, b: Ball) {
+        const dist = vec2_distance(a.position, b.position);
+        return dist <= (a.size + b.size);
     }
 
 }
