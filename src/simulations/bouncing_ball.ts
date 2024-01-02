@@ -45,7 +45,8 @@ export default class BouncingBall extends Simulation {
         }
 
         // draw ground
-        g.strokeColor("15px solid black");
+        g.strokeSize(15);
+        g.strokeColor("black");
         g.line(this.width/2-200, this.height/2+50, this.width/2+200, this.height/2+50);
     }
 
