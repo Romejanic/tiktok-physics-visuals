@@ -131,3 +131,7 @@ dist
 
 # Generated images
 *.png
+*.mp4
+
+# Mac grr
+.DS_Store

@@ -123,7 +123,7 @@ export default class BeeDroppingBalls extends Simulation {
         g.circle(28, -15, 5, true);
         g.arc(28, -20, 15, 2.5, 5.3);
         g.fillColor("black");
-        g.point(30, -15);
+        g.circle(30, -15, 3);
         g.line(18, 13, 15, 25);
         g.line(5, 13, 2, 25);
         g.line(-8, 13, -10, 25);
