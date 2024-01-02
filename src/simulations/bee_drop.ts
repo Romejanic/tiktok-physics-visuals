@@ -18,6 +18,8 @@ export default class BeeDroppingBalls extends Simulation {
     balls = new Array<Ball>();
     spawnTimer = 0;
 
+    // debugPoints = new Array<vec2>();
+
     private readonly center: vec2;
     private readonly spawnPoint: vec2;
 
@@ -35,12 +37,21 @@ export default class BeeDroppingBalls extends Simulation {
         this.spawnTimer = 0;
         this.balls.splice(0);
         this.newBall();
+
+        // this.debugPoints = [
+        //     [ this.spawnPoint[0], this.spawnPoint[1]+8 ],
+        //     [ this.spawnPoint[0], this.spawnPoint[1]-50 ]
+        // ];
     }
 
     draw(g: Graphics): void {
         // debug: draw starting range
         // g.fillColor("blue");
         // g.circle(this.width/2, this.height/2-this.width/3, SPAWN_SIZE);
+        // g.fillColor("red");
+        // for(const p of this.debugPoints) {
+        //     g.circle(...p, 5);
+        // }
 
         // draw all balls
         for(const b of this.balls) {
@@ -89,6 +100,12 @@ export default class BeeDroppingBalls extends Simulation {
                 // prevent ball from going through wall
                 b.position = vec2_sub(this.center, vec2_scale(normal, this.width/3-b.size));
             }
+            // test for collision with neck
+            if(this.isTouchingNeck(b)) {
+                const side = Math.sign(b.position[0] - this.spawnPoint[0]);
+                b.velocity[0] *= -1;
+                b.position[0] = (this.spawnPoint[0] + SPAWN_SIZE * side) - b.size * side;
+            }
             // test for collisions with other balls
             for(const j in this.balls) {
                 if(i === j) continue;
@@ -120,6 +137,13 @@ export default class BeeDroppingBalls extends Simulation {
         if(vec2_distance(b.position, this.spawnPoint) < SPAWN_SIZE) return false;
         const distance = vec2_distance(b.position, this.center);
         return distance > this.width/3-b.size-0.1 && distance < this.width/3+b.size+0.1;
+    }
+
+    isTouchingNeck(b: Ball) {
+        const touchingX1 = Math.abs(b.position[0] - this.spawnPoint[0]-SPAWN_SIZE) <= b.size;
+        const touchingX2 = Math.abs(b.position[0] - this.spawnPoint[0]+SPAWN_SIZE) <= b.size;
+        const touchingY = b.position[1] <= this.spawnPoint[1]+8-b.size && b.position[1] >= this.spawnPoint[1]-50+b.size;
+        return (touchingX1 || touchingX2) && touchingY;
     }
 
     isTouchingOtherBall(a: Ball, b: Ball) {

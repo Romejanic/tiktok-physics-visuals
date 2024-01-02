@@ -9,6 +9,11 @@ cd tiktok-physics-visuals
 npm i
 ```
 
+**Mac Users:** you will need to install some extra dependencies before running `npm i`.
+```sh
+brew install pkg-config cairo pango libpng jpeg giflib librsvg 
+```
+
 **Open dev preview of simulation**
 ```sh
 npm run dev
