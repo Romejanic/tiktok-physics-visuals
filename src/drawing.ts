@@ -66,4 +66,22 @@ export default class Graphics {
         this.ctx.stroke();
     }
 
+    arc(x: number, y: number, r: number, start: number, end: number) {
+        this.ctx.beginPath();
+        this.ctx.arc(x * this._scaleFactor, y * this._scaleFactor, r * this._scaleFactor, start, end);
+        this.ctx.stroke();
+    }
+
+    translate(x: number, y: number) {
+        this.ctx.translate(x * this._scaleFactor, y * this._scaleFactor);
+    }
+
+    rotate(angle: number) {
+        this.ctx.rotate(angle);
+    }
+
+    reset() {
+        this.ctx.resetTransform();
+    }
+
 }
