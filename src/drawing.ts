@@ -44,8 +44,12 @@ export default class Graphics {
     }
 
     rect(x: number, y: number, w: number, h: number, stroke = false) {
-        this.ctx.fillRect(x * this._scaleFactor, y * this._scaleFactor, w * this._scaleFactor, h * this._scaleFactor);
-        if(stroke) this.ctx.strokeRect(x * this._scaleFactor, y * this._scaleFactor, w * this._scaleFactor, h * this._scaleFactor);
+        x *= this._scaleFactor;
+        y *= this._scaleFactor;
+        w *= this._scaleFactor;
+        h *= this._scaleFactor;
+        this.ctx.fillRect(x, y, w, h);
+        if(stroke) this.ctx.strokeRect(x, y, w, h);
     }
 
     circle(x: number, y: number, r: number, stroke = false) {
