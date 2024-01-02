@@ -1,15 +1,17 @@
-import BouncingBall from "./simulations/bouncing_ball";
 import config from "./config.json";
 import Graphics from "./drawing";
+import simulations from "./sim-list";
+import Simulation from "./sim";
 import "./dev.css";
 
 // grab UI elements
-const canvas = document.getElementById("output") as HTMLCanvasElement;
-const pauseBtn = document.getElementById("pauseBtn");
-const resetBtn = document.getElementById("resetBtn");
-const stepBtn  = document.getElementById("stepBtn");
-const timer    = document.getElementById("timer");
-const fpsCount = document.getElementById("fps");
+const canvas    = document.getElementById("output") as HTMLCanvasElement;
+const pauseBtn  = document.getElementById("pauseBtn");
+const resetBtn  = document.getElementById("resetBtn");
+const stepBtn   = document.getElementById("stepBtn");
+const timer     = document.getElementById("timer");
+const fpsCount  = document.getElementById("fps");
+const simSelect = document.getElementById("sim") as HTMLSelectElement;
 
 // constants
 const width = config.preview.screenWidth;
@@ -23,14 +25,19 @@ let simTime = 0;
 let playing = true;
 let lastFrame = Date.now();
 
-const sim = new BouncingBall(width, height);
+let currentSimId = "";
+let sim: Simulation | null = null;
 
 function initApp() {
     // resize canvas based on config
     canvas.width = width;
     canvas.height = height;
 
+    populateSims();
+
     // initialize simulation
+    const SimClass = simulations[simSelect.value];
+    sim = new SimClass(width, height);
     sim.init();
 
     const handleFrame = () => {
@@ -62,12 +69,34 @@ function drawFrame() {
     sim.draw(graphics);
 }
 
+// logic for populating dropdown menu for sim
+function populateSims() {
+    const ids = Object.keys(simulations);
+    for(const id of ids) {
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.innerText = id;
+        simSelect.appendChild(opt);
+    }
+    (simSelect.firstChild as HTMLOptionElement).selected = true;
+}
+
 // add event handlers to UI
 function updateTimer() {
     timer.innerText = `${simTime.toFixed(2)}s`;
 }
 function updateFps(delta: number) {
     fpsCount.innerText = `${(1/delta).toFixed(1)} fps`;
+}
+
+function switchSimulation(id: string) {
+    if(id === currentSimId) return;
+    currentSimId = id;
+    const SimClass = simulations[id];
+    sim = new SimClass(width, height);
+    sim.init();
+    simTime = 0;
+    updateTimer();
 }
 
 pauseBtn.addEventListener("click", () => {
@@ -92,6 +121,11 @@ stepBtn.addEventListener("click", () => {
     updateFps(delta);
     updateTimer();
     drawFrame();
+});
+
+simSelect.addEventListener("change", e => {
+    const id = simSelect.value;
+    switchSimulation(id);
 });
 
 // start everything
