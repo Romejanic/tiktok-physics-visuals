@@ -2,7 +2,7 @@ import Graphics from "../drawing";
 import { TWO_PI, randomColor, vec2, vec2_add, vec2_distance, vec2_length, vec2_normalize, vec2_scale, vec2_sub } from "../math";
 import Simulation from "../sim";
 
-const SPAWN_INTERVAL = 5;
+const SPAWN_INTERVAL = 2.5;
 const GAP_SIZE = 0.3;
 const SPAWN_SIZE = 45;
 
@@ -53,12 +53,17 @@ export default class BeeDroppingBalls extends Simulation {
         // for(const p of this.debugPoints) {
         //     g.circle(...p, 5);
         // }
+        g.strokeSize(2);
+        g.strokeColor("black");
 
         // draw all balls
         for(const b of this.balls) {
             g.fillColor(b.color);
             g.circle(...b.position, b.size, true);
         }
+
+        // draw bees
+        this.drawBee(g, this.width/2, 300);
 
         // draw test tube shape
         g.translate(...this.center);
@@ -71,6 +76,30 @@ export default class BeeDroppingBalls extends Simulation {
         // draw neck of tube
         g.line(this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]-50);
         g.line(this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]-50);
+    }
+
+    drawBee(g: Graphics, x: number, y: number) {
+        g.translate(x, y);
+        g.fillColor("gray");
+        g.triangle(-40, 0, -25, -5, -25, 5, true);
+        g.fillColor("yellow");
+        g.ellipse(0, 0, 30, 15, true);
+        g.fillColor("black");
+        g.rect(-20, -12, 5, 25);
+        g.rect(-10, -15, 5, 30);
+        g.rect(0, -15, 5, 30);
+        g.fillColor("yellow");
+        g.arc(34, -20, 15, 2.5, 5.3);
+        g.ellipse(20, -10, 15, 11, true);
+        g.fillColor("white");
+        g.circle(28, -15, 5, true);
+        g.arc(28, -20, 15, 2.5, 5.3);
+        g.fillColor("black");
+        g.point(30, -15);
+        g.line(18, 13, 15, 25);
+        g.line(5, 13, 2, 25);
+        g.line(-8, 13, -10, 25);
+        g.reset();
     }
 
     simulate(delta: number): void {
@@ -97,7 +126,7 @@ export default class BeeDroppingBalls extends Simulation {
             if(this.isTouchingSide(b)) {
                 const normal = vec2_normalize(vec2_sub(this.center, b.position));
                 const side = this.sideOfGlass(b, normal);
-                let bounceBias = 1;
+                let bounceBias = 0.99;
                 if(!b.bounced) {
                     b.bounced = true;
                     bounceBias = 0.9;

@@ -59,6 +59,17 @@ export default class Graphics {
         if(stroke) this.ctx.stroke();
     }
 
+    ellipse(x: number, y: number, rx: number, ry: number, stroke = false) {
+        x *= this._scaleFactor;
+        y *= this._scaleFactor;
+        rx *= this._scaleFactor;
+        ry *= this._scaleFactor;
+        this.ctx.beginPath();
+        this.ctx.ellipse(x, y, rx, ry, 0, 0, TWO_PI);
+        this.ctx.fill();
+        if(stroke) this.ctx.stroke();
+    }
+
     line(x1: number, y1: number, x2: number, y2: number) {
         this.ctx.beginPath();
         this.ctx.moveTo(x1 * this._scaleFactor, y1 * this._scaleFactor);
@@ -70,6 +81,26 @@ export default class Graphics {
         this.ctx.beginPath();
         this.ctx.arc(x * this._scaleFactor, y * this._scaleFactor, r * this._scaleFactor, start, end);
         this.ctx.stroke();
+    }
+
+    point(x: number, y: number) {
+        this.circle(x, y, this.ctx.lineWidth, false);
+    }
+
+    triangle(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, stroke = false) {
+        x1 *= this._scaleFactor;
+        y1 *= this._scaleFactor;
+        x2 *= this._scaleFactor;
+        y2 *= this._scaleFactor;
+        x3 *= this._scaleFactor;
+        y3 *= this._scaleFactor;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.lineTo(x3, y3);
+        this.ctx.closePath();
+        this.ctx.fill();
+        if(stroke) this.ctx.stroke();
     }
 
     translate(x: number, y: number) {
