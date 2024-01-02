@@ -1,10 +1,12 @@
 import Graphics from "../drawing";
-import { TWO_PI, randomColor, vec2, vec2_add, vec2_distance, vec2_length, vec2_normalize, vec2_scale, vec2_sub } from "../math";
+import { TWO_PI, lerp, randomColor, vec2, vec2_add, vec2_distance, vec2_length, vec2_normalize, vec2_scale, vec2_sub } from "../math";
 import Simulation from "../sim";
 
 const SPAWN_INTERVAL = 2.5;
 const GAP_SIZE = 0.3;
 const SPAWN_SIZE = 45;
+const SPAWN_OFFSET = 100;
+const BALL_SIZE = 10;
 
 interface Ball {
     position: vec2;
@@ -18,6 +20,9 @@ export default class BeeDroppingBalls extends Simulation {
 
     balls = new Array<Ball>();
     spawnTimer = 0;
+    nextBallColor = "black";
+    beeLastPos: vec2 = [0, 0];
+    beeVelocity: vec2 = [0, 0];
 
     // debugPoints = new Array<vec2>();
 
@@ -37,6 +42,9 @@ export default class BeeDroppingBalls extends Simulation {
     init(): void {
         this.spawnTimer = 0;
         this.balls.splice(0);
+        this.beeLastPos = [-50, this.spawnPoint[1]];
+        this.beeVelocity = [0, 0];
+        this.nextBallColor = randomColor();
         this.newBall();
 
         // this.debugPoints = [
@@ -62,8 +70,23 @@ export default class BeeDroppingBalls extends Simulation {
             g.circle(...b.position, b.size, true);
         }
 
-        // draw bees
-        this.drawBee(g, this.width/2, 300);
+        // draw main bee
+        const animT   = this.spawnTimer / SPAWN_INTERVAL;
+        const animY   = Math.sin(animT * TWO_PI) * 25;
+        const beePosX = lerp(-50, (this.width/2), animT);
+        const beePosY = this.spawnPoint[1]-SPAWN_OFFSET-25+animY;
+        // draw next ball under bee
+        g.fillColor(this.nextBallColor);
+        g.circle(beePosX, beePosY+25, BALL_SIZE, true);
+        this.drawBee(g, beePosX, beePosY);
+
+        // calculate bee velocity
+        this.beeVelocity = vec2_scale(vec2_sub([beePosX, beePosY], this.beeLastPos), 10);
+        this.beeLastPos = [beePosX, beePosY];
+
+        // draw ghost bee to fly off screen
+        const ghostPosX = lerp(this.width/2, this.width+50, animT);
+        this.drawBee(g, ghostPosX, beePosY);
 
         // draw test tube shape
         g.translate(...this.center);
@@ -162,12 +185,13 @@ export default class BeeDroppingBalls extends Simulation {
     newBall() {
         const jitterX = Math.random() * 8 - 4;
         this.balls.push({
-            position: vec2_add(this.spawnPoint, [jitterX, -150]),
-            velocity: [Math.random() * 10 - 5, 0],
-            size: 10,
-            color: randomColor(),
+            position: vec2_add(this.spawnPoint, [jitterX, -SPAWN_OFFSET]),
+            velocity: vec2_add(this.beeVelocity, [Math.random() * 5, 0]),
+            size: BALL_SIZE,
+            color: this.nextBallColor,
             bounced: false
         });
+        this.nextBallColor = randomColor();
     }
 
     isTouchingSide(b: Ball) {

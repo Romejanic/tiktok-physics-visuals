@@ -3,6 +3,11 @@
 // constants
 export const TWO_PI = 2 * Math.PI;
 
+// general functions
+export function lerp(a: number, b: number, t: number) {
+    return a * (1 - t) + b * t;
+}
+
 // color functions
 export function randomColor() {
     const r = Math.floor(Math.random() * 255).toString(16).padStart(2, '');
