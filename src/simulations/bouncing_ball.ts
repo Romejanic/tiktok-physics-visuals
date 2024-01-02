@@ -25,14 +25,15 @@ export default class BouncingBall extends Simulation {
         for(const ball of this.balls) {
             let yVel = ball.velocity[1];
             // apply gravity
-            yVel -= 98 * delta;
+            yVel += 98 * delta;
             // check for collision with ground
-            if(ball.position[1] <= this.height/2+50-(ball.size/2)) {
+            // also only bounce if ball is heading towards ground
+            if(ball.position[1] >= this.height/2+50-ball.size && Math.sign(yVel) > 0) {
                 yVel *= -0.9;
             }
             // move ball based on velocity
             ball.velocity = [0, yVel];
-            ball.position = vec2_add(ball.position, vec2_scale(ball.velocity, ball.size * delta));
+            ball.position = vec2_add(ball.position, vec2_scale(ball.velocity, delta));
         }
     }
     
