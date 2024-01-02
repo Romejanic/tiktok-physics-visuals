@@ -112,6 +112,7 @@ function switchSimulation(id: string) {
     sim.init();
     simTime = 0;
     updateTimer();
+    drawFrame();
     localStorage.setItem(selectedKey, currentSimId);
 }
 
