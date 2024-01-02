@@ -1,4 +1,4 @@
-import { CanvasRenderingContext2D } from "canvas";
+import Graphics from "./drawing";
 
 export default abstract class Simulation {
 
@@ -24,9 +24,9 @@ export default abstract class Simulation {
 
     /**
      * Draws the current state of the simulation to the screen.
-     * @param ctx The canvas context to draw onto.
+     * @param g The graphics object used to draw graphics.
      */
-    abstract draw(ctx: CanvasRenderingContext2D): void;
+    abstract draw(g: Graphics): void;
 
     /**
      * The width of the current screen.

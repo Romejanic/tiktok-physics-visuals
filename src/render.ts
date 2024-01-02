@@ -1,5 +1,6 @@
 import { Canvas, PNGStream, createCanvas } from "canvas";
 import { createWriteStream, mkdirSync } from "fs";
+import Graphics from "./drawing";
 import config from "./config.json";
 import BouncingBall from "./simulations/bouncing_ball";
 
@@ -12,7 +13,7 @@ async function main() {
 
     // create canvas to draw frames
     const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext("2d");
+    const graphics = new Graphics(canvas);
 
     // TODO: load this from file with command
     // e.g. npm start bouncing_ball
@@ -28,12 +29,9 @@ async function main() {
     for(let i = 0; i < frameCount; i++) {
         sim.simulate(timeStep);
 
-        // draw background to clear screen
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         // draw simulation
-        sim.draw(ctx);
+        graphics.clear(bgColor);
+        sim.draw(graphics);
 
         // save frame to disk
         await saveFrame(canvas, i);

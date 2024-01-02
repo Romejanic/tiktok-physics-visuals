@@ -1,5 +1,6 @@
 import BouncingBall from "./simulations/bouncing_ball";
 import config from "./config.json";
+import Graphics from "./drawing";
 
 // grab UI elements
 const canvas = document.getElementById("output") as HTMLCanvasElement;
@@ -14,7 +15,7 @@ const width = config.preview.screenWidth;
 const height = config.preview.screenHeight;
 const bgColor = config.preview.background;
 
-const ctx = canvas.getContext("2d");
+const graphics = new Graphics(canvas);
 
 // app state
 let simTime = 0;
@@ -55,13 +56,9 @@ function initApp() {
 }
 
 function drawFrame() {
-    // draw background to clear screen
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // draw simulation
-    // @ts-ignore just roll with it
-    sim.draw(ctx);
+    // draw frame
+    graphics.clear(bgColor);
+    sim.draw(graphics);
 }
 
 // add event handlers to UI

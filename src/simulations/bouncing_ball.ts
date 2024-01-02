@@ -1,6 +1,6 @@
-import { CanvasRenderingContext2D } from "canvas";
 import { vec2, vec2_add, vec2_scale } from "../math";
 import Simulation from "../sim";
+import Graphics from "../drawing";
 
 interface Ball {
     position: vec2;
@@ -37,21 +37,16 @@ export default class BouncingBall extends Simulation {
         }
     }
     
-    draw(ctx: CanvasRenderingContext2D): void {
+    draw(g: Graphics): void {
         // draw each ball
         for(const ball of this.balls) {
-            ctx.fillStyle = "red";
-            ctx.beginPath();
-            ctx.arc(...ball.position, ball.size, 0, 2*Math.PI, false);
-            ctx.fill();
+            g.fillColor("red");
+            g.circle(...ball.position, ball.size);
         }
 
         // draw ground
-        ctx.strokeStyle = "15px solid black";
-        ctx.beginPath();
-        ctx.moveTo(this.width/2-200, this.height/2+50);
-        ctx.lineTo(this.width/2+200, this.height/2+50);
-        ctx.stroke();
+        g.strokeColor("15px solid black");
+        g.line(this.width/2-200, this.height/2+50, this.width/2+200, this.height/2+50);
     }
 
 }

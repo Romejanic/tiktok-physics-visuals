@@ -1,3 +1,9 @@
+// MATHS
+
+// constants
+export const TWO_PI = 2 * Math.PI;
+
+// vec2 functions/types
 export type vec2 = [number, number];
 
 export function vec2_add(a: vec2, b: vec2): vec2 {
