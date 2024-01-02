@@ -11,6 +11,7 @@ interface Ball {
     velocity: vec2;
     size: number;
     color: string;
+    bounced: boolean;
 }
 
 export default class BeeDroppingBalls extends Simulation {
@@ -96,8 +97,13 @@ export default class BeeDroppingBalls extends Simulation {
             if(this.isTouchingSide(b)) {
                 const normal = vec2_normalize(vec2_sub(this.center, b.position));
                 const side = this.sideOfGlass(b, normal);
+                let bounceBias = 1;
+                if(!b.bounced) {
+                    b.bounced = true;
+                    bounceBias = 0.9;
+                }
                 const force = vec2_length(b.velocity) * -side;
-                b.velocity = vec2_scale(normal, force);
+                b.velocity = vec2_scale(normal, force * bounceBias);
                 // prevent ball from going through wall
                 b.position = vec2_sub(this.center, vec2_scale(normal, this.width/3+b.size*side));
             }
@@ -130,7 +136,8 @@ export default class BeeDroppingBalls extends Simulation {
             position: vec2_add(this.spawnPoint, [jitterX, -150]),
             velocity: [Math.random() * 10 - 5, 0],
             size: 10,
-            color: randomColor()
+            color: randomColor(),
+            bounced: false
         });
     }
 
