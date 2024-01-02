@@ -95,7 +95,7 @@ export default class BeeDroppingBalls extends Simulation {
             // test for collision with edge
             if(this.isTouchingSide(b)) {
                 const normal = vec2_normalize(vec2_sub(this.center, b.position));
-                const side = this.sideOfGlass(b);
+                const side = this.sideOfGlass(b, normal);
                 const force = vec2_length(b.velocity) * -side;
                 b.velocity = vec2_scale(normal, force);
                 // prevent ball from going through wall
@@ -128,7 +128,7 @@ export default class BeeDroppingBalls extends Simulation {
         const jitterX = Math.random() * 8 - 4;
         this.balls.push({
             position: vec2_add(this.spawnPoint, [jitterX, -150]),
-            velocity: [0, 0],
+            velocity: [Math.random() * 10 - 5, 0],
             size: 10,
             color: randomColor()
         });
@@ -152,7 +152,9 @@ export default class BeeDroppingBalls extends Simulation {
         return dist <= (a.size + b.size);
     }
 
-    sideOfGlass(b: Ball) {
+    sideOfGlass(b: Ball, normal: vec2) {
+        // stop balls phasing through glass at the bottom
+        if(normal[1] < -0.25) return -1;
         const distance = vec2_distance(b.position, this.center) - b.size/2;
         return Math.sign(distance - (this.width/3));
     }
