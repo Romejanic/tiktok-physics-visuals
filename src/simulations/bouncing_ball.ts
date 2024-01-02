@@ -50,4 +50,8 @@ export default class BouncingBall extends Simulation {
         g.line(this.width/2-200, this.height/2+50, this.width/2+200, this.height/2+50);
     }
 
+    get duration() {
+        return 10.0;
+    }
+
 }

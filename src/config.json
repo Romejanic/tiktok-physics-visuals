@@ -3,7 +3,6 @@
         "screenWidth": 1080,
         "screenHeight": 1920,
         "framesPerSecond": 30,
-        "duration": 10.0,
         "background": "#d9e7ff"
     },
     "preview": {

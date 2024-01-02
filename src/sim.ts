@@ -11,6 +11,11 @@ export default abstract class Simulation {
     }
 
     /**
+     * Length of the animation in seconds.
+     */
+    abstract get duration(): number;
+
+    /**
      * Called when the sim first starts. Used to set up the scene
      * and also to clear any pre-existing elements.
      */

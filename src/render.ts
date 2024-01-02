@@ -1,16 +1,20 @@
 import { Canvas, PNGStream, createCanvas } from "canvas";
 import { createWriteStream, mkdirSync } from "fs";
 import Graphics from "./drawing";
+import simulations from "./sim-list";
 import config from "./config.json";
-import BouncingBall from "./simulations/bouncing_ball";
 
 async function main() {
+    // get the name of the simulation to render
+    if(process.argv.length < 3) return error("Usage: ./render.sh [sim-name]");
+    const simName = process.argv[2];
+
+    // read config values
     const screenWidth = config.render.screenWidth;
     const screenHeight = config.render.screenHeight;
     const simWidth = config.preview.screenWidth;
     const simHeight = config.preview.screenHeight;
     const fps = config.render.framesPerSecond;
-    const duration = config.render.duration;
     const bgColor = config.render.background;
 
     // create canvas to draw frames
@@ -18,16 +22,17 @@ async function main() {
     const scaleFactor = screenHeight / simHeight;
     const graphics = new Graphics(canvas, scaleFactor);
 
-    // TODO: load this from file with command
-    // e.g. npm start bouncing_ball
-    const sim = new BouncingBall(simWidth, simHeight);
+    // get simulation instance by name
+    const SimClass = simulations[simName];
+    if(!SimClass) return error(`Unknown sim name: ${simName}`);
+    const sim = new SimClass(simWidth, simHeight);
     sim.init();
 
     // create frame output directory
     mkdirSync("out");
 
     // draw each from
-    const frameCount = Math.round(duration * fps);
+    const frameCount = Math.round(sim.duration * fps);
     const timeStep = 1 / fps;
     for(let i = 0; i < frameCount; i++) {
         sim.simulate(timeStep);
@@ -55,6 +60,11 @@ function saveStreamToFile(stream: PNGStream, path: string) {
         stream.on("error", reject);
         stream.pipe(out);
     });
+}
+
+function error(msg: string) {
+    console.error(msg);
+    process.exit(1);
 }
 
 // config types
