@@ -2,7 +2,7 @@
     "render": {
         "screenWidth": 1080,
         "screenHeight": 1920,
-        "framesPerSecond": 30,
+        "framesPerSecond": 60,
         "background": "#d9e7ff"
     },
     "preview": {

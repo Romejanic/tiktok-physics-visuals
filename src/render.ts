@@ -43,7 +43,7 @@ async function main() {
 
         // save frame to disk
         await saveFrame(canvas, i);
-        console.log(`Frame ${i}/${frameCount} done`);
+        console.log(`Frame ${i+1}/${frameCount} done`);
     }
 }
 

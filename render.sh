@@ -14,6 +14,9 @@ SIM_NAME="${1}"
 rm -rf out
 npm start $SIM_NAME
 
+# get fps value from config
+FPS=$(jq -r '.render.framesPerSecond' src/config.json)
+
 # use ffmpeg to convert frames to an mp4 file
 cd out
-ffmpeg -framerate 30 -pattern_type glob -i '*.png' -c:v libx264 -pix_fmt yuv420p out.mp4
+ffmpeg -framerate $FPS -pattern_type glob -i '*.png' -c:v libx264 -pix_fmt yuv420p out.mp4

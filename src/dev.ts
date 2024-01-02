@@ -45,7 +45,7 @@ function initApp() {
         requestAnimationFrame(handleFrame);
 
         // recalculate delta time and update fps
-        const delta = (Date.now() - lastFrame) / 1000;
+        const delta = Math.min(0.5, (Date.now() - lastFrame) / 1000);
         lastFrame = Date.now();
 
         // don't do anything if we're paused
