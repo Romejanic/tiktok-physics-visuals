@@ -55,6 +55,10 @@ export default class BeeDroppingBalls extends Simulation {
         g.strokeColor("black");
         g.arc(0, 0, this.width/3, GAP_SIZE, TWO_PI-GAP_SIZE);
         g.reset();
+
+        // draw neck of tube
+        g.line(this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]-50);
+        g.line(this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]-50);
     }
 
     simulate(delta: number): void {
