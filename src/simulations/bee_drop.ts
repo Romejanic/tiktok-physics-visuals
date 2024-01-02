@@ -36,7 +36,7 @@ export default class BeeDroppingBalls extends Simulation {
     }
 
     get duration(): number {
-        return 30;
+        return 45;
     }
 
     init(): void {
