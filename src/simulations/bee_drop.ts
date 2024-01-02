@@ -1,9 +1,10 @@
 import Graphics from "../drawing";
-import { TWO_PI, randomColor, vec2, vec2_add, vec2_scale } from "../math";
+import { TWO_PI, randomColor, vec2, vec2_add, vec2_distance, vec2_length, vec2_normalize, vec2_scale, vec2_sub } from "../math";
 import Simulation from "../sim";
 
 const SPAWN_INTERVAL = 5;
 const GAP_SIZE = 0.3;
+const SPAWN_SIZE = 45;
 
 interface Ball {
     position: vec2;
@@ -17,6 +18,15 @@ export default class BeeDroppingBalls extends Simulation {
     balls = new Array<Ball>();
     spawnTimer = 0;
 
+    private readonly center: vec2;
+    private readonly spawnPoint: vec2;
+
+    constructor(w: number, h: number) {
+        super(w, h);
+        this.center = [ this.width/2, this.height/2 ];
+        this.spawnPoint = [ this.width/2, this.height/2-this.width/3 ];
+    }
+
     get duration(): number {
         return 30;
     }
@@ -28,6 +38,10 @@ export default class BeeDroppingBalls extends Simulation {
     }
 
     draw(g: Graphics): void {
+        // debug: draw starting range
+        // g.fillColor("blue");
+        // g.circle(this.width/2, this.height/2-this.width/3, SPAWN_SIZE);
+
         // draw all balls
         for(const b of this.balls) {
             g.fillColor(b.color);
@@ -54,20 +68,32 @@ export default class BeeDroppingBalls extends Simulation {
 
         // simulate balls
         for(const b of this.balls) {
-            const gravity = 98 * delta;
+            const gravity = 980 * delta;
             b.velocity = vec2_add(b.velocity, [0, gravity]);
             b.position = vec2_add(b.position, vec2_scale(b.velocity, delta));
+            if(this.isTouchingSide(b)) {
+                const normal = vec2_sub(this.center, b.position);
+                const force = vec2_length(b.velocity);
+                b.velocity = vec2_scale(vec2_normalize(normal), force);
+            }
         }
 
     }
 
     newBall() {
+        const jitterX = Math.random() * 8 - 4;
         this.balls.push({
-            position: [ this.width/2, this.height/2-this.width/3 ],
+            position: vec2_add(this.spawnPoint, [jitterX, 0]),
             velocity: [0, 0],
             size: 10,
             color: randomColor()
         });
+    }
+
+    isTouchingSide(b: Ball) {
+        if(vec2_distance(b.position, this.spawnPoint) < SPAWN_SIZE) return false;
+        const distance = vec2_distance(b.position, this.center);
+        return distance > this.width/3-b.size-0.1 && distance < this.width/3+b.size+0.1;
     }
 
 }
