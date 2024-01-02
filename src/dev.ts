@@ -1,6 +1,7 @@
 import BouncingBall from "./simulations/bouncing_ball";
 import config from "./config.json";
 import Graphics from "./drawing";
+import "./dev.css";
 
 // grab UI elements
 const canvas = document.getElementById("output") as HTMLCanvasElement;

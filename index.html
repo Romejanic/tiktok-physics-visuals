@@ -4,19 +4,25 @@
     <title>Tiktok Physics Vis - Dev Mode</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-        canvas {
-            outline: 1px solid gray;
-        }
-    </style>
 </head>
 <body>
     <canvas id="output"></canvas>
-    <button id="pauseBtn">Pause</button>
-    <button id="resetBtn">Reset</button>
-    <button id="stepBtn">Step</button>
-    <span id="timer">0.00s</span>
-    <span id="fps">30.0 fps</span>
+    <div class="controls">
+        <label for="sim">Simulation</label>
+        <select id="sim">
+            <option value="example1" selected>Example 1</option>
+            <option value="example2">Example 2</option>
+        </select>
+        <div class="buttons">
+            <div class="wide-btn">
+                <button id="pauseBtn">Pause</button>
+            </div>
+            <button id="resetBtn">Reset</button>
+            <button id="stepBtn">Step</button>
+        </div>
+        <span id="timer">0.00s</span>
+        <span id="fps">30.0 fps</span>
+    </div>
 
     <!-- load script from vite -->
     <script type="module" src="/src/dev.ts"></script>
