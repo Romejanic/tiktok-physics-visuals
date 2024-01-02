@@ -40,6 +40,7 @@ export default class Graphics {
 
     strokeSize(size: number) {
         this._strokeSize = size;
+        this.ctx.lineWidth = size * this._scaleFactor;
     }
 
     rect(x: number, y: number, w: number, h: number, stroke = false) {

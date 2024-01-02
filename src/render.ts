@@ -5,19 +5,22 @@ import config from "./config.json";
 import BouncingBall from "./simulations/bouncing_ball";
 
 async function main() {
-    const width = config.render.screenWidth;
-    const height = config.render.screenHeight;
+    const screenWidth = config.render.screenWidth;
+    const screenHeight = config.render.screenHeight;
+    const simWidth = config.preview.screenWidth;
+    const simHeight = config.preview.screenHeight;
     const fps = config.render.framesPerSecond;
     const duration = config.render.duration;
     const bgColor = config.render.background;
 
     // create canvas to draw frames
-    const canvas = createCanvas(width, height);
-    const graphics = new Graphics(canvas);
+    const canvas = createCanvas(screenWidth, screenHeight);
+    const scaleFactor = screenHeight / simHeight;
+    const graphics = new Graphics(canvas, scaleFactor);
 
     // TODO: load this from file with command
     // e.g. npm start bouncing_ball
-    const sim = new BouncingBall(width, height);
+    const sim = new BouncingBall(simWidth, simHeight);
     sim.init();
 
     // create frame output directory
