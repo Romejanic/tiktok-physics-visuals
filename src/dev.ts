@@ -17,6 +17,7 @@ const simSelect = document.getElementById("sim") as HTMLSelectElement;
 const width = config.preview.screenWidth;
 const height = config.preview.screenHeight;
 const bgColor = config.preview.background;
+const selectedKey = "selected_sim";
 
 const graphics = new Graphics(canvas);
 
@@ -71,6 +72,7 @@ function drawFrame() {
 
 // logic for populating dropdown menu for sim
 function populateSims() {
+    // add an option for each simulation
     const ids = Object.keys(simulations);
     for(const id of ids) {
         const opt = document.createElement("option");
@@ -78,7 +80,20 @@ function populateSims() {
         opt.innerText = id;
         simSelect.appendChild(opt);
     }
-    (simSelect.firstChild as HTMLOptionElement).selected = true;
+    
+    function selectFirst() {
+        (simSelect.firstChild as HTMLOptionElement).selected = true;
+    }
+
+    // if present, select the last sim set in local storage
+    const lastId = localStorage.getItem(selectedKey);
+    if(lastId) {
+        const el = simSelect.querySelector(`[value=${lastId}]`);
+        if(el) (el as HTMLOptionElement).selected = true;
+        else selectFirst();
+    } else {
+        selectFirst();
+    }
 }
 
 // add event handlers to UI
@@ -97,6 +112,7 @@ function switchSimulation(id: string) {
     sim.init();
     simTime = 0;
     updateTimer();
+    localStorage.setItem(selectedKey, currentSimId);
 }
 
 pauseBtn.addEventListener("click", () => {
