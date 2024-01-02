@@ -99,6 +99,11 @@ export default class BeeDroppingBalls extends Simulation {
         // draw neck of tube
         g.line(this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]-SPAWN_SIZE, this.spawnPoint[1]-50);
         g.line(this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]+8, this.spawnPoint[0]+SPAWN_SIZE, this.spawnPoint[1]-50);
+
+        // draw ball count
+        g.font("Arial", 40);
+        g.textAlign("center");
+        g.text(`${this.balls.length} ball${this.balls.length === 1 ? "" : "s"}`, this.width/2, this.height/2+this.width/2);
     }
 
     drawBee(g: Graphics, x: number, y: number) {

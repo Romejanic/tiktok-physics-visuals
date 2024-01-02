@@ -103,6 +103,19 @@ export default class Graphics {
         if(stroke) this.ctx.stroke();
     }
 
+    font(family: string, size: number) {
+        const scaledSize = Math.round(size * this._scaleFactor);
+        this.ctx.font = `${scaledSize}px ${family}`;
+    }
+
+    textAlign(alignment: "left" | "right" | "center") {
+        this.ctx.textAlign = alignment;
+    }
+
+    text(text: string, x: number, y: number) {
+        this.ctx.fillText(text, x * this._scaleFactor, y * this._scaleFactor);
+    }
+
     translate(x: number, y: number) {
         this.ctx.translate(x * this._scaleFactor, y * this._scaleFactor);
     }
