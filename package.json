@@ -4,13 +4,15 @@
   "description": "A collection of physics visualisations for my TikTok page",
   "main": "src/render.ts",
   "scripts": {
-    "start": "ts-node src/render.ts"
+    "start": "ts-node src/render.ts",
+    "dev": "vite"
   },
   "dependencies": {
     "canvas": "^2.11.2"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   }
 }
