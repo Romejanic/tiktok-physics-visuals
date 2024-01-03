@@ -36,7 +36,7 @@ export default class BeeDroppingBalls extends Simulation {
     }
 
     get duration(): number {
-        return 45;
+        return 60;
     }
 
     init(): void {
@@ -154,7 +154,7 @@ export default class BeeDroppingBalls extends Simulation {
             if(this.isTouchingSide(b)) {
                 const normal = vec2_normalize(vec2_sub(this.center, b.position));
                 const side = this.sideOfGlass(b, normal);
-                let bounceBias = 0.99;
+                let bounceBias = 1;
                 if(!b.bounced) {
                     b.bounced = true;
                     bounceBias = 0.9;
