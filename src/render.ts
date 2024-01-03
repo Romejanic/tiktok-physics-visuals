@@ -3,6 +3,7 @@ import { createWriteStream, mkdirSync } from "fs";
 import Graphics from "./drawing";
 import simulations from "./sim-list";
 import config from "./config.json";
+import AudioTrack from "./sound";
 
 async function main() {
     // get the name of the simulation to render
@@ -21,6 +22,7 @@ async function main() {
     const canvas = createCanvas(screenWidth, screenHeight);
     const scaleFactor = screenHeight / simHeight;
     const graphics = new Graphics(canvas, scaleFactor);
+    const audio = new AudioTrack();
 
     // get simulation instance by name
     const SimClass = simulations[simName];
@@ -34,8 +36,14 @@ async function main() {
     // draw each from
     const frameCount = Math.round(sim.duration * fps);
     const timeStep = 1 / fps;
+    let simTime    = 0;
     for(let i = 0; i < frameCount; i++) {
-        sim.simulate(timeStep);
+        // update audio track time
+        simTime += timeStep;
+        audio.update(simTime);
+        
+        // run the simulation one step
+        sim.simulate(timeStep, audio);
 
         // draw simulation
         graphics.clear(bgColor);
@@ -45,6 +53,9 @@ async function main() {
         await saveFrame(canvas, i);
         console.log(`Frame ${i+1}/${frameCount} done`);
     }
+
+    // write audio track to file
+    await audio.export(`out/audio.wav`);
 }
 
 async function saveFrame(canvas: Canvas, frameIndex: number) {

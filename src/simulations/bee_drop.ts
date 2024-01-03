@@ -1,6 +1,7 @@
 import Graphics from "../drawing";
 import { TWO_PI, lerp, randomColor, vec2, vec2_add, vec2_distance, vec2_length, vec2_normalize, vec2_scale, vec2_sub } from "../math";
 import Simulation from "../sim";
+import AudioTrack from "../sound";
 
 const SPAWN_INTERVAL = 2.5;
 const GAP_SIZE = 0.3;
@@ -130,7 +131,7 @@ export default class BeeDroppingBalls extends Simulation {
         g.reset();
     }
 
-    simulate(delta: number): void {
+    simulate(delta: number, audio: AudioTrack): void {
         this.spawnTimer += delta;
 
         // spawn new balls at each spawn interval
@@ -150,6 +151,7 @@ export default class BeeDroppingBalls extends Simulation {
             if(b.position[1] > this.height+b.size) {
                 forRemoval.push(i);
             }
+            let collision = false;
             // test for collision with edge
             if(this.isTouchingSide(b)) {
                 const normal = vec2_normalize(vec2_sub(this.center, b.position));
@@ -163,12 +165,14 @@ export default class BeeDroppingBalls extends Simulation {
                 b.velocity = vec2_scale(normal, force * bounceBias);
                 // prevent ball from going through wall
                 b.position = vec2_sub(this.center, vec2_scale(normal, this.width/3+b.size*side));
+                collision = true;
             }
             // test for collision with neck
             if(this.isTouchingNeck(b)) {
                 const side = Math.sign(b.position[0] - this.spawnPoint[0]);
                 b.velocity[0] *= -1;
                 b.position[0] = (this.spawnPoint[0] + SPAWN_SIZE * side) - b.size * side;
+                collision = true;
             }
             // test for collisions with other balls
             for(const j in this.balls) {
@@ -179,8 +183,11 @@ export default class BeeDroppingBalls extends Simulation {
                     const force = (vec2_length(b.velocity) + vec2_length(other.velocity)) / 2;
                     other.velocity = vec2_scale(collisionNormal, force);
                     b.velocity = vec2_scale(collisionNormal, -force);
+                    collision = true;
                 }
             }
+            // play sound if we collided with something
+            if(collision) audio.playSound("pop.aiff");
         }
 
         // remove any balls marked for removal

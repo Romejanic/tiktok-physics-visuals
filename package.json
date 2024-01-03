@@ -8,7 +8,8 @@
     "dev": "vite"
   },
   "dependencies": {
-    "canvas": "^2.11.2"
+    "canvas": "^2.11.2",
+    "sox-audio": "^0.3.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

@@ -1,4 +1,5 @@
 import Graphics from "./drawing";
+import AudioTrack from "./sound";
 
 export default abstract class Simulation {
 
@@ -24,8 +25,9 @@ export default abstract class Simulation {
     /**
      * Runs another step of the simulation.
      * @param delta The number of seconds passed since the last step
+     * @param audio The audio track to play sounds to
      */
-    abstract simulate(delta: number): void;
+    abstract simulate(delta: number, audio: AudioTrack): void;
 
     /**
      * Draws the current state of the simulation to the screen.

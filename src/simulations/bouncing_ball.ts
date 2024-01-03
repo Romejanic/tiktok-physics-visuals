@@ -1,6 +1,7 @@
 import { vec2, vec2_add, vec2_scale } from "../math";
 import Simulation from "../sim";
 import Graphics from "../drawing";
+import AudioTrack from "../sound";
 
 interface Ball {
     position: vec2;
@@ -21,7 +22,7 @@ export default class BouncingBall extends Simulation {
         });
     }
 
-    simulate(delta: number): void {
+    simulate(delta: number, audio: AudioTrack): void {
         for(const ball of this.balls) {
             let yVel = ball.velocity[1];
             // apply gravity
@@ -31,6 +32,7 @@ export default class BouncingBall extends Simulation {
             const maxY = this.height/2+50-ball.size;
             if(ball.position[1] >= maxY && Math.sign(yVel) > 0) {
                 yVel *= -0.9;
+                audio.playSound("pop.aiff");
             }
             // move ball based on velocity
             ball.velocity = [0, yVel];

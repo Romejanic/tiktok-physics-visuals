@@ -11,7 +11,7 @@ npm i
 
 **Mac Users:** you will need to install some extra dependencies before running `npm i`.
 ```sh
-brew install pkg-config cairo pango libpng jpeg giflib librsvg 
+brew install pkg-config cairo pango libpng jpeg giflib librsvg
 ```
 
 **Open dev preview of simulation**
@@ -24,7 +24,7 @@ This will open up http://localhost:5713 on your browser, allowing you to test, d
 **Render animation to file**
 ```sh
 sudo apt update
-sudo apt install ffmpeg
+sudo apt install ffmpeg sox
 ./render.sh
 ```
 The generated frames will be located in `out/` and the full animation will be in the `out/out.mp4` file.
